@@ -4083,12 +4083,9 @@
     {
       "cell_type": "code",
       "source": [
-        "# Save trained model and prediction metadata\n",
+        "# Save and verify trained model\n",
         "\n",
-        "import os\n",
         "import joblib\n",
-        "\n",
-        "os.makedirs(\"../models\", exist_ok=True)\n",
         "\n",
         "model_package = {\n",
         "    \"model\": rf_model,\n",
@@ -4098,29 +4095,120 @@
         "    \"upper_limit\": upper_limit\n",
         "}\n",
         "\n",
-        "model_path = \"../models/fish_shelf_life_rf.joblib\"\n",
+        "model_path = \"/content/fish_shelf_life_rf.joblib\"\n",
         "\n",
+        "# Save model\n",
         "joblib.dump(model_package, model_path)\n",
         "\n",
-        "print(\"Model saved successfully:\")\n",
-        "print(model_path)"
+        "# Verify saved file\n",
+        "check = joblib.load(model_path)\n",
+        "\n",
+        "print(\"Model saved successfully.\")\n",
+        "print(\"Model verified successfully.\")\n",
+        "print(\"Features:\", check[\"model_features\"])\n",
+        "print(\"Path:\", model_path)"
       ],
       "metadata": {
-        "id": "SleOtQNT-mBU",
-        "outputId": "b81bfc50-fa90-45ec-d159-21e744b85ad3",
         "colab": {
           "base_uri": "https://localhost:8080/"
-        }
+        },
+        "id": "SleOtQNT-mBU",
+        "outputId": "591b5036-0ffd-4a69-cb7f-1496081947e8"
       },
-      "execution_count": 23,
+      "execution_count": 24,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
-            "Model saved successfully:\n",
-            "../models/fish_shelf_life_rf.joblib\n"
+            "Model saved successfully.\n",
+            "Model verified successfully.\n",
+            "Features: ['storage_temp_c', 'temp_mean_2h', 'temp_max_2h', 'temp_exposure_c_hours', 'air_temp_c', 'humidity_pct', 'humidity_mean_2h', 'temp_difference_c', 'gas_clean', 'gas_median_2h', 'gas_change_recent', 'lid_open_binary', 'lid_open_ratio_2h', 'lid_open_ratio', 'lid_open_rate_per_hour', 'avg_lid_open_duration_sec']\n",
+            "Path: /content/fish_shelf_life_rf.joblib\n"
           ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import files\n",
+        "\n",
+        "files.download(\"/content/fish_shelf_life_rf.joblib\")"
+      ],
+      "metadata": {
+        "id": "3H-6JDzPDHo2",
+        "outputId": "6b4d2405-c6f8-4b30-ece5-9182c82e3b74",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 17
+        }
+      },
+      "execution_count": 25,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Javascript object>"
+            ],
+            "application/javascript": [
+              "\n",
+              "    async function download(id, filename, size) {\n",
+              "      if (!google.colab.kernel.accessAllowed) {\n",
+              "        return;\n",
+              "      }\n",
+              "      const div = document.createElement('div');\n",
+              "      const label = document.createElement('label');\n",
+              "      label.textContent = `Downloading \"${filename}\": `;\n",
+              "      div.appendChild(label);\n",
+              "      const progress = document.createElement('progress');\n",
+              "      progress.max = size;\n",
+              "      div.appendChild(progress);\n",
+              "      document.body.appendChild(div);\n",
+              "\n",
+              "      const buffers = [];\n",
+              "      let downloaded = 0;\n",
+              "\n",
+              "      const channel = await google.colab.kernel.comms.open(id);\n",
+              "      // Send a message to notify the kernel that we're ready.\n",
+              "      channel.send({})\n",
+              "\n",
+              "      for await (const message of channel.messages) {\n",
+              "        // Send a message to notify the kernel that we're ready.\n",
+              "        channel.send({})\n",
+              "        if (message.buffers) {\n",
+              "          for (const buffer of message.buffers) {\n",
+              "            buffers.push(buffer);\n",
+              "            downloaded += buffer.byteLength;\n",
+              "            progress.value = downloaded;\n",
+              "          }\n",
+              "        }\n",
+              "      }\n",
+              "      const blob = new Blob(buffers, {type: 'application/binary'});\n",
+              "      const a = document.createElement('a');\n",
+              "      a.href = window.URL.createObjectURL(blob);\n",
+              "      a.download = filename;\n",
+              "      div.appendChild(a);\n",
+              "      a.click();\n",
+              "      div.remove();\n",
+              "    }\n",
+              "  "
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Javascript object>"
+            ],
+            "application/javascript": [
+              "download(\"download_abed1d59-21a7-47c9-a92f-88639989396f\", \"fish_shelf_life_rf.joblib\", 18935489)"
+            ]
+          },
+          "metadata": {}
         }
       ]
     }
